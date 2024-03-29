@@ -43,7 +43,7 @@ const fetchUserData = async () => {
     console.log('API Response:', response.data);
 
     // Process user data as needed, e.g., set state, display in UI, etc.
-    setUserData(response.data.data);
+    setUserData(response.data.user);
   } catch (error) {
     console.error('Error fetching user data:', error);
     // Handle error, e.g., display error message to user
