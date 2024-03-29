@@ -9,18 +9,16 @@ exports.register=async(req,res)=>{
     try {
         // fetch data
         const {
-            firstName,
-            lastName,
+          
             email,
             password,
+            image,
             picturePath,
-            friends,
-            location,
-            occupation
+          
         }=req.body;
 
         // validation
-        if(!(firstName || lastName || email || password)){
+        if(!(email || password)){
             return res.status(403).json({
                 success:false,
                 message:"all fields are required",
@@ -32,16 +30,9 @@ exports.register=async(req,res)=>{
 
         //  create new user
         const newUser=await User.create({
-            firstName,
-            lastName,
             email,
             password:passwordHash,
-            // picturePath,
-            // friends,
-            // location,
-            // occupation,
-            // viewedProfile:Math.floor(Math.random * 1000),
-            // impressions:Math.floor(Math.random * 1000),
+           
 
         });
 
@@ -120,22 +111,27 @@ exports.login = async(req,res)=>{
 }
 
 
-
-
-
-// get user
-exports.getUser=async(req,res)=>{
+// Fetch logged-in user based on verified token and decoded payload
+exports.getLoggedInUser = async (req, res) => {
     try {
-        const userData=req.user;
-        console.log(userData);
+        // Extract user data from request object
+        const userData = req.user;
 
-        const userId=userData.id;
-        const user= await User.findById(userId);
+        // Extract user ID from user data
+        const userId = userData.id;
+        console.log("userid is:=>",userId);
 
-        return res.status(200).json({user});
+        // Find user by ID
+        const user = await User.findById(userId);
+
+        // If user is found, return the user data
+        if (user) {
+            return res.status(200).json({ success: true, user });
+        } else {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
     } catch (error) {
-        res.status(500).json({
-        error:err.message,
-    })
+        // Handle errors
+        return res.status(500).json({ success: false, error: error.message });
     }
 }
