@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import toast from 'react-hot-toast';
 const CreatePostForm = () => {
     const [formData, setFormData] = useState({
         title: '',
@@ -24,11 +24,14 @@ const CreatePostForm = () => {
         }
       }
     );
+      toast.success('Post Created Succesfully')
     // If the request is successful, return the response data
     return response.data;
+    
             
         } catch (error) {
             console.error('Error creating post:', error.response.data.message);
+            toast.error('Failed To Create Post')
             // Handle error, display error message to the user
         }
     };
