@@ -1,36 +1,57 @@
-// middleware/verifyToken.js
+// // middleware/verifyToken.js
 
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 
+// const verifyToken = (req, res, next) => {
+
+//     // first check that req header has authorization or not
+//     const authorization= req.headers.authorization;
+//     if(!authorization){
+//         return res.status(401).json(
+//             {
+//                 error:'token not found'
+//             }
+//         );
+//     }
+//      const token = req.headers.authorization.split(' ')[1];
+//        console.log("token is ",token);
+//     try {
+//     //   verify jwt token
+//     const decoded=jwt.verify(token, process.env.JWT_SECRET);
+
+//     // attach user inform,ation to req obj
+//     req.user=decoded;
+//     next();
+
+//     } catch (error) {
+//         console.log(error)
+//         return res.status(403).json({ success: false, message: "Invalid token." });
+//     }
+// };
+
+// --------------------------
 const verifyToken = (req, res, next) => {
-
-    // first check that req header has authorization or not
-    const authorization= req.headers.authorization;
-    if(!authorization){
-        return res.status(401).json(
-            {
-                error:'token not found'
-            }
-        );
+    // First, check that req header has authorization or not
+    const authorization = req.headers.authorization;
+    if (!authorization) {
+        return res.status(401).json({ error: 'Token not found' });
     }
-     const token = req.headers.authorization.split(' ')[1];
-       console.log("token is ",token);
+    const token = req.headers.authorization.split(' ')[1];
+    console.log("Token is:", token); // Check if token is correctly extracted
     try {
-    //   verify jwt token
-    const decoded=jwt.verify(token, process.env.JWT_SECRET);
-
-    // attach user inform,ation to req obj
-    req.user=decoded;
-    next();
-
+        // Verify jwt token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        // Attach user information to req object
+        req.user = decoded.userData;
+        console.log("User data attached to req:", req.user); // Check if user data is correctly attached
+        next();
     } catch (error) {
-        console.log(error)
+        console.log(error);
         return res.status(403).json({ success: false, message: "Invalid token." });
     }
 };
-
 
 // func to generate token
 const generateToken = (userData) => {
@@ -39,4 +60,9 @@ const generateToken = (userData) => {
     });
 
 }
+
+
+
+
+
  module.exports={verifyToken,generateToken}
